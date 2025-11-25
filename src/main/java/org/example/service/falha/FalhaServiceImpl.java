@@ -52,4 +52,23 @@ public class FalhaServiceImpl implements FalhaService{
 
         return repository.findAllWithFilters();
     }
+
+    @Override
+    public Falha buscarFalhaPorId(long id) throws SQLException {
+
+        var falhaPersistency = repository.findById(id);
+
+        if (falhaPersistency == null) {
+
+            throw new RuntimeException("Falha não encontrada!");
+        }
+
+        return falhaPersistency;
+    }
+
+    @Override
+    public void alterarStatusFalha(Falha falha, String novoStatus) throws SQLException {
+
+        repository.changeStatus(falha, novoStatus);
+    }
 }

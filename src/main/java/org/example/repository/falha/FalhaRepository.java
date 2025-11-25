@@ -94,4 +94,62 @@ public class FalhaRepository {
 
         return falhas;
     }
+
+    public Falha findById(long id) throws SQLException {
+
+        String query = """
+                SELECT
+                id,
+                equipamentoId,
+                dataHoraOcorrencia,
+                descricao,
+                criticidade,
+                status,
+                tempoParadaHoras
+                FROM Falha
+                WHERE
+                id = ?;
+        """;
+
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setLong(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                return new Falha(
+                        id,
+                        rs.getLong("equipamentoId"),
+                        rs.getTimestamp("dataHoraOcorrencia").toLocalDateTime(),
+                        rs.getString("descricao"),
+                        rs.getString("criticidade"),
+                        rs.getString("status"),
+                        rs.getBigDecimal("tempoParadaHoras")
+                );
+            }
+        }
+
+        return null;
+    }
+
+    public void changeStatus(Falha falha, String status) throws SQLException {
+
+        String query = """
+                UPDATE Falha
+                SET status = ?
+                WHERE id = ?;
+        """;
+
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, status);
+            stmt.setLong(2, falha.getId());
+
+            stmt.executeUpdate();
+        }
+    }
 }

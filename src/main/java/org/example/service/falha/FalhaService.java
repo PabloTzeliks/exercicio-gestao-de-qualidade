@@ -10,4 +10,7 @@ public interface FalhaService {
 
     List<Falha> buscarFalhasCriticasAbertas() throws SQLException;
 
+    Falha buscarFalhaPorId(long id) throws SQLException;
+
+    void alterarStatusFalha(Falha falha, String novoStatus) throws SQLException;
 }
