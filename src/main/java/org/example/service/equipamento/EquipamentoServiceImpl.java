@@ -23,6 +23,16 @@ public class EquipamentoServiceImpl implements EquipamentoService{
 
     @Override
     public Equipamento buscarEquipamentoPorId(Long id) throws SQLException {
-        return null;
+
+        System.out.println("Buscando Equipamento por ID: " + id);
+
+        Equipamento equipamento = repository.findById(id);
+
+        if (equipamento == null) {
+
+            throw new RuntimeException("Equipamento não encontrado!");
+        }
+
+        return equipamento;
     }
 }

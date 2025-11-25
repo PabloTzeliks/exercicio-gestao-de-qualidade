@@ -42,4 +42,34 @@ public class EquipamentoRepository {
 
         return equipamento;
     }
+
+    public Equipamento findById(Long id) throws SQLException {
+
+        String query = """
+                SELECT
+                nome, numeroDeSerie, areaSetor, statusOperacional
+                FROM Equipamento WHERE id = ?;
+        """;
+
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setLong(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+
+                return new Equipamento(
+                        id,
+                        rs.getString("nome"),
+                        rs.getString("numeroDeSerie"),
+                        rs.getString("areaSetor"),
+                        rs.getString("statusOperacional")
+                );
+            }
+        }
+
+        return null;
+    }
 }
