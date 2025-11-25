@@ -1,5 +1,6 @@
 import org.example.database.Conexao;
 import org.example.model.Falha;
+import org.example.repository.equipamento.EquipamentoRepository;
 import org.example.service.equipamento.EquipamentoService;
 import org.example.service.equipamento.EquipamentoServiceImpl;
 import org.example.service.falha.FalhaService;
@@ -16,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class FalhaServiceIntegrationTest {
 
     private FalhaService falhaService;
+    private EquipamentoRepository equipamentoRepository;
     private EquipamentoService equipamentoService;
 
     /** SQL — Criação da tabela Falha */
@@ -93,7 +95,8 @@ public class FalhaServiceIntegrationTest {
         }
 
         // serviços reais
-        equipamentoService = new EquipamentoServiceImpl();
+        equipamentoRepository = new EquipamentoRepository();
+        equipamentoService = new EquipamentoServiceImpl(equipamentoRepository);
         falhaService = new FalhaServiceImpl(); // alunos criam
     }
 

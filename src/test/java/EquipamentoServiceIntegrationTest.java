@@ -1,5 +1,6 @@
 import org.example.database.Conexao;
 import org.example.model.Equipamento;
+import org.example.repository.equipamento.EquipamentoRepository;
 import org.example.service.equipamento.EquipamentoService;
 import org.example.service.equipamento.EquipamentoServiceImpl;
 import org.junit.jupiter.api.*;
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Teste de Integração - EquipamentoService com Banco Real (Teste)")
 public class EquipamentoServiceIntegrationTest {
 
+    private EquipamentoRepository equipamentoRepository;
     private EquipamentoService equipamentoService;
 
     // SQL para criar a tabela (fornecido por você)
@@ -87,7 +89,8 @@ public class EquipamentoServiceIntegrationTest {
         // 6. Instancia o Service
         // Isso fará com que o Service crie seu Repositório,
         // que por sua vez usará ConexaoBanco.conectar()
-        equipamentoService = new EquipamentoServiceImpl();
+        equipamentoRepository = new EquipamentoRepository();
+        equipamentoService = new EquipamentoServiceImpl(equipamentoRepository);
     }
 
     @Test
