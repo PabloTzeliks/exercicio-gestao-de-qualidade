@@ -5,6 +5,8 @@ import org.example.model.Equipamento;
 import org.example.model.Falha;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FalhaRepository {
 
@@ -46,5 +48,50 @@ public class FalhaRepository {
         }
 
         return falha;
+    }
+
+    public List<Falha> findAllWithFilters() throws SQLException {
+
+        List<Falha> falhas = new ArrayList<>();
+
+        String query = """
+                SELECT
+                id,
+                equipamentoId,
+                dataHoraOcorrencia,
+                descricao,
+                criticidade,
+                status,
+                tempoParadaHoras
+                FROM Falha
+                WHERE
+                criticidade = ? AND status = ?;
+        """;
+
+        try (Connection con = Conexao.conectar();
+             PreparedStatement stmt = con.prepareStatement(query)) {
+
+            stmt.setString(1, "CRITICA");
+            stmt.setString(2, "ABERTA");
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                Falha falha = new Falha(
+                        rs.getLong("id"),
+                        rs.getLong("equipamentoId"),
+                        rs.getTimestamp("dataHoraOcorrencia").toLocalDateTime(),
+                        rs.getString("descricao"),
+                        rs.getString("criticidade"),
+                        rs.getString("status"),
+                        rs.getBigDecimal("tempoParadaHoras")
+                );
+
+                falhas.add(falha);
+            }
+        }
+
+        return falhas;
     }
 }
