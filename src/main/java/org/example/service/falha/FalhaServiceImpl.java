@@ -1,14 +1,50 @@
 package org.example.service.falha;
 
+import org.example.model.Equipamento;
 import org.example.model.Falha;
+import org.example.repository.falha.FalhaRepository;
+import org.example.service.equipamento.EquipamentoService;
+import org.example.service.equipamento.EquipamentoServiceImpl;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public class FalhaServiceImpl implements FalhaService{
+
+    private EquipamentoService equipamentoService;
+    private FalhaRepository repository;
+
+    public FalhaServiceImpl(FalhaRepository repository, EquipamentoService equipamentoService) {
+        this.repository = repository;
+        this.equipamentoService = equipamentoService;
+    }
+
     @Override
     public Falha registrarNovaFalha(Falha falha) throws SQLException {
-        return null;
+
+        var equipamento = buscarEquipamentoOuFalhar(falha.getEquipamentoId());
+
+        falha.setStatus("ABERTA");
+
+        var falhaPersistency = repository.save(falha);
+
+        if (falhaPersistency.getCriticidade().equals("CRITICA")) {
+
+            equipamentoService.alterarStatusEquipamento(equipamento, "EM_MANUTENCAO");
+        }
+
+        return falha;
+    }
+
+    private Equipamento buscarEquipamentoOuFalhar(long id) throws SQLException {
+
+        try {
+
+            return equipamentoService.buscarEquipamentoPorId(id);
+        } catch (RuntimeException ex) {
+
+            throw new IllegalArgumentException(ex.getMessage());
+        }
     }
 
     @Override

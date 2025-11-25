@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 public class EquipamentoServiceImpl implements EquipamentoService{
 
-    private EquipamentoRepository repository;
+    private final EquipamentoRepository repository;
 
     public EquipamentoServiceImpl(EquipamentoRepository repository) {
         this.repository = repository;
@@ -34,5 +34,11 @@ public class EquipamentoServiceImpl implements EquipamentoService{
         }
 
         return equipamento;
+    }
+
+    @Override
+    public void alterarStatusEquipamento(Equipamento equipamento, String novoStatus) throws SQLException {
+
+        repository.changeStatus(equipamento, novoStatus);
     }
 }
