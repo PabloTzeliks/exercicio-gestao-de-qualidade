@@ -1,7 +1,14 @@
 import org.example.database.Conexao;
 import org.example.model.AcaoCorretiva;
+import org.example.repository.acaocorretiva.AcaoCorretivaRepository;
+import org.example.repository.equipamento.EquipamentoRepository;
+import org.example.repository.falha.FalhaRepository;
 import org.example.service.acaocorretiva.AcaoCorretivaService;
 import org.example.service.acaocorretiva.AcaoCorretivaServiceImpl;
+import org.example.service.equipamento.EquipamentoService;
+import org.example.service.equipamento.EquipamentoServiceImpl;
+import org.example.service.falha.FalhaService;
+import org.example.service.falha.FalhaServiceImpl;
 import org.junit.jupiter.api.*;
 
 import java.sql.Connection;
@@ -14,6 +21,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Teste de Integração - AcaoCorretivaService (Banco Real)")
 public class AcaoCorretivaServiceIntegrationTest {
+
+    private EquipamentoRepository repositoryEquipamento;
+    private FalhaRepository repositoryFalha;
+    private AcaoCorretivaRepository repositoryAcao;
+
+    private AcaoCorretivaRepository repository;
+
+    private EquipamentoService equipamentoService;
+    private FalhaService falhaService;
+
     private AcaoCorretivaService acaoService;
 
     // ---------------------------
@@ -137,7 +154,14 @@ public class AcaoCorretivaServiceIntegrationTest {
             stmt.execute("SET FOREIGN_KEY_CHECKS = 1");
         }
 
-        acaoService = new AcaoCorretivaServiceImpl();
+        repositoryEquipamento = new EquipamentoRepository();
+        repositoryFalha = new FalhaRepository();
+        repositoryAcao = new AcaoCorretivaRepository();
+
+        equipamentoService = new EquipamentoServiceImpl(repositoryEquipamento);
+        falhaService = new FalhaServiceImpl(repositoryFalha, equipamentoService);
+
+        acaoService = new AcaoCorretivaServiceImpl(repositoryAcao, equipamentoService, falhaService);
     }
 
 

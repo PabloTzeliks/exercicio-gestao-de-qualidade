@@ -22,7 +22,7 @@ public class FalhaServiceImpl implements FalhaService{
     @Override
     public Falha registrarNovaFalha(Falha falha) throws SQLException {
 
-        var equipamento = buscarEquipamentoOuFalhar(falha.getEquipamentoId());
+        var equipamento = buscarEquipamentoOuErro(falha.getEquipamentoId());
 
         falha.setStatus("ABERTA");
 
@@ -36,7 +36,7 @@ public class FalhaServiceImpl implements FalhaService{
         return falha;
     }
 
-    private Equipamento buscarEquipamentoOuFalhar(long id) throws SQLException {
+    private Equipamento buscarEquipamentoOuErro(long id) throws SQLException {
 
         try {
 
