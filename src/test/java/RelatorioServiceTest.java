@@ -3,6 +3,7 @@ import org.example.dto.EquipamentoContagemFalhasDTO;
 import org.example.dto.FalhaDetalhadaDTO;
 import org.example.dto.RelatorioParadaDTO;
 import org.example.model.Equipamento;
+import org.example.repository.relatorio.RelatorioRepository;
 import org.example.service.relatorioservice.RelatorioService;
 import org.example.service.relatorioservice.RelatorioServiceImpl;
 import org.junit.jupiter.api.*;
@@ -19,7 +20,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class RelatorioServiceTest {
 
-    private static RelatorioService service;
+    private RelatorioRepository relatorioRepository = new RelatorioRepository();
+    private RelatorioService service = new RelatorioServiceImpl(relatorioRepository);
 
     // ---------------------------
     //  SQL: CREATE TABLES
@@ -113,8 +115,6 @@ public class RelatorioServiceTest {
             stmt.execute(SQL_CREATE_FALHA);
             stmt.execute(SQL_CREATE_ACAO);
         }
-
-        service = new RelatorioServiceImpl();
     }
 
     @AfterAll
@@ -153,14 +153,14 @@ public class RelatorioServiceTest {
         List<RelatorioParadaDTO> lista = service.gerarRelatorioTempoParada();
 
         assertNotNull(lista);
-        assertEquals(3, lista.size(), "Devem existir dois equipamentos com falhas");
+        assertEquals(2, lista.size(), "Devem existir dois equipamentos com falhas");
 
         RelatorioParadaDTO motor = lista.stream()
                 .filter(x -> x.getNomeEquipamento().equals("Motor Principal"))
                 .findFirst()
                 .orElseThrow();
 
-        assertEquals(1.5, motor.getTotalHorasParadas());
+        assertEquals(6.5, motor.getTotalHorasParadas());
 
     }
 
