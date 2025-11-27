@@ -32,7 +32,15 @@ public class RelatorioServiceImpl implements RelatorioService{
 
     @Override
     public Optional<FalhaDetalhadaDTO> buscarDetalhesCompletosFalha(long falhaId) throws SQLException {
-        return Optional.empty();
+
+        Optional<FalhaDetalhadaDTO> falhaDetalhada = repository.findDetailedFailById(falhaId);
+
+        if (falhaDetalhada.isEmpty()) {
+
+            throw new RuntimeException("ID inválido!");
+        }
+
+        return falhaDetalhada;
     }
 
     @Override
