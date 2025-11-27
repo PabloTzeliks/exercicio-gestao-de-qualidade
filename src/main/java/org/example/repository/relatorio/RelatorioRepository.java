@@ -1,6 +1,7 @@
 package org.example.repository.relatorio;
 
 import org.example.database.Conexao;
+import org.example.dto.EquipamentoContagemFalhasDTO;
 import org.example.dto.FalhaDetalhadaDTO;
 import org.example.dto.RelatorioParadaDTO;
 import org.example.model.AcaoCorretiva;
@@ -124,5 +125,35 @@ public class RelatorioRepository {
         }
 
         return Optional.empty();
+    }
+
+    public List<EquipamentoContagemFalhasDTO> findTotalFails(int contagemMinimaFalhas) throws SQLException {
+
+        List<EquipamentoContagemFalhasDTO> dtos = new ArrayList<>();
+
+        String query = """
+                SELECT e.id as idEquipamento, e.nome as nomeEquipamento, COUNT(f.id) as totalFalhas
+                FROM Equipamento e
+                JOIN Falha f ON e.id = f.equipamentoId
+                GROUP BY e.id, e.nome
+                HAVING totalFalhas >= ?;
+                """;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setLong(1, contagemMinimaFalhas);
+
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+
+                EquipamentoContagemFalhasDTO dto  = new EquipamentoContagemFalhasDTO(rs.getLong("idEquipamento"), rs.getString("nomeEquipamento"), rs.getInt("totalFalhas"));
+
+                dtos.add(dto);
+            }
+        }
+
+        return dtos;
     }
 }

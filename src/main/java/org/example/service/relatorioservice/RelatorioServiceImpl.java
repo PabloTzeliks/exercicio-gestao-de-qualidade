@@ -45,6 +45,12 @@ public class RelatorioServiceImpl implements RelatorioService{
 
     @Override
     public List<EquipamentoContagemFalhasDTO> gerarRelatorioManutencaoPreventiva(int contagemMinimaFalhas) throws SQLException {
-        return List.of();
+
+        if (contagemMinimaFalhas <= 0) {
+
+            throw new RuntimeException("Contagem minima de falhas inválida!");
+        }
+
+        return repository.findTotalFails(contagemMinimaFalhas);
     }
 }
