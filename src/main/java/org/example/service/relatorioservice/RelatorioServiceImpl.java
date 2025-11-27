@@ -26,8 +26,8 @@ public class RelatorioServiceImpl implements RelatorioService{
     }
 
     @Override
-    public List<Equipamento> buscarEquipamentosSemFalhasPorPeriodo(LocalDate dataInicio, LocalDate datafim) throws SQLException {
-        return List.of();
+    public List<Equipamento> buscarEquipamentosSemFalhasPorPeriodo(LocalDate dataInicio, LocalDate dataFim) throws SQLException {
+        return repository.findAllNoFailInPeriod(dataInicio, dataFim);
     }
 
     @Override
